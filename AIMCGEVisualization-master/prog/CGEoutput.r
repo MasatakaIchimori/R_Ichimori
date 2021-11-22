@@ -50,7 +50,7 @@ MyThemeLine <- theme_bw() +
     axis.line=element_line(colour="black"),
     panel.background=element_rect(fill = "white"),
         panel.grid.major=element_line(linetype="dashed",colour="grey",size=0.5),
-    panel.grid.major=element_blank(),
+    #panel.grid.major=element_blank(),
     strip.background=element_rect(fill="white", colour="white"),
     strip.text.x = element_text(size=10, colour = "black", angle = 0,face="bold"),
     axis.text.x=element_text(size = 10,angle=45, vjust=0.9, hjust=1, margin = unit(c(t = 0.3, r = 0, b = 0, l = 0), "cm")),
@@ -68,8 +68,11 @@ outputdir <- c("../output/")
 #filename <- c("CHN")
 filename <- c("global_17")
 #file.copy(paste0("E:/sfujimori/CGE/AIMHub2.2ESIntAsia/anls_output/iiasa_database/gdx/",filename,"_emf.gdx"), paste0("../modeloutput/",filename,"_emf.gdx"),overwrite = TRUE)
-file.copy(paste0("../../anls_output/iiasa_database/gdx/",filename,"_IAMC.gdx"), paste0("../modeloutput/",filename,"_IAMC.gdx"),overwrite = TRUE)
-file.copy(paste0("../../AIMCGE/individual/AIMEnduseG2CGE/data/merged_output.gdx"), paste0("../modeloutput/AIMEnduseG.gdx"),overwrite = TRUE)
+#file.copy(paste0("../../anls_output/iiasa_database/gdx/",filename,"_IAMC.gdx"), paste0("../modeloutput/",filename,"_IAMC.gdx"),overwrite = TRUE)
+#file.copy(paste0("../../AIMCGE/individual/AIMEnduseG2CGE/data/merged_output.gdx"), paste0("../modeloutput/AIMEnduseG.gdx"),overwrite = TRUE)
+#M
+file.copy(paste0("C:/Analysis/AIM_CGE_WWF_Japan_Ichimori/anls_output/iiasa_database/gdx/",filename,"_IAMC.gdx"), paste0("../modeloutput/",filename,"_IAMC.gdx"),overwrite = TRUE)
+file.copy(paste0("C:/Analysis/AIM_CGE_WWF_Japan_Ichimori/AIMCGE/individual/AIMEnduseG2CGE/data/merged_output.gdx"), paste0("../modeloutput/AIMEnduseG.gdx"),overwrite = TRUE)
 
 linepalette <- c("#4DAF4A","#FF7F00","#377EB8","#E41A1C","#984EA3","#F781BF","#8DD3C7","#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#D9D9D9","#BC80BD","#CCEBC5","#FFED6F","#7f878f","#A65628","#FFFF33")
 linepalette <- c("SSP2_BaU_NoCC"="#4DAF4A","SSP2_BaU_Highyield"="#FF7F00","SSP2_BaU_Highyield_USA"="#377EB8")
@@ -108,7 +111,9 @@ if(enduseflag==1){
     select(-SCENARIO) %>% rename(SCENARIO="Name")
 }
 
-file.copy(paste0("../../AIMCGE/individual/IEAEB1062CGE/output/IEAEBIAMCTemplate.gdx"), paste0("../data/IEAEBIAMCTemplate.gdx"),overwrite = TRUE)
+#file.copy(paste0("../../AIMCGE/individual/IEAEB1062CGE/output/IEAEBIAMCTemplate.gdx"), paste0("../data/IEAEBIAMCTemplate.gdx"),overwrite = TRUE)
+#M
+file.copy(paste0("C:/Analysis/AIM_CGE_WWF_Japan_Ichimori/AIMCGE/individual/IEAEB1062CGE/output/IEAEBIAMCTemplate.gdx"), paste0("C:/R_MASATAKA Ichimori/R_Ichimori/AIMCGEVisualization-master/data/IEAEBIAMCTemplate.gdx"),overwrite = TRUE)
 IEAEB0 <- rgdx.param('../data/IEAEBIAMCTemplate.gdx','IAMCtemp17') %>% rename("Value"=IAMCtemp17,"Variable"=VEMF,"Y"=St,"Region"=Sr17,"SCENARIO"=SceEneMod) %>%
   select(Region,Variable,Y,Value,SCENARIO) %>% filter(Region %in% region) %>% mutate(Model="Reference")
 IEAEB0$Y <- as.numeric(levels(IEAEB0$Y))[IEAEB0$Y]
@@ -165,15 +170,15 @@ for (i in 1:nrow(varlist)){
   if(nrow(filter(allmodel,Variable==varlist[i,1] & Region==rr))>0){
     miny <- min(filter(allmodel,Variable==varlist[i,1] & Region==rr)$Y) 
     plot.0 <- ggplot() + 
-      geom_bar(data=filter(allmodel,Variable==varlist[i,1] & Model!="Reference"& Region==rr),aes(x=Y, y = Value , color=interaction(SCENARIO,Model),group=interaction(SCENARIO,Model)),stat="identity") +
-      geom_bar(data=filter(allmodel,Variable==varlist[i,1] & Model!="Reference"& Region==rr),aes(x=Y, y = Value , color=interaction(SCENARIO,Model),shape=Model),size=3.0,fill="white") +
+      geom_point(data=filter(allmodel,Variable==varlist[i,1] & Model!="Reference"& Region==rr),aes(x=Y, y = Value , color=interaction(SCENARIO,Model),group=interaction(SCENARIO,Model)),stat="identity") +
+      geom_point(data=filter(allmodel,Variable==varlist[i,1] & Model!="Reference"& Region==rr),aes(x=Y, y = Value , color=interaction(SCENARIO,Model),shape=Model),size=3.0,fill="white") +
       MyThemeLine + scale_color_manual(values=linepalette) + scale_x_continuous(breaks=seq(miny,maxy,10)) +
       xlab("year") + ylab(varlist[i,4])  +  ggtitle(paste(rr,varlist[i,3],sep=" ")) +
       annotate("segment",x=2005,xend=maxy,y=0,yend=0,linetype="dashed",color="grey")+ 
       theme(legend.title=element_blank()) 
     if(length(scenariomap$SCENARIO)<20){
       plot.0 <- plot.0 +
-      geom_bar(data=filter(allmodel,Variable==varlist[i,1] & Model=="Reference"& Region==rr),aes(x=Y, y = Value) , color="black",shape=6,size=2.0,fill="grey") 
+      geom_point(data=filter(allmodel,Variable==varlist[i,1] & Model=="Reference"& Region==rr),aes(x=Y, y = Value) , color="black",shape=6,size=2.0,fill="grey") 
     }
     if(varlist[i,2]==1){
       outname <- paste0(outputdir,rr,"/png/",varlist[i,1],".png")
